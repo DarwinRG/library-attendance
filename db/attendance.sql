@@ -179,6 +179,42 @@ ALTER TABLE `attendance`
 --
 ALTER TABLE `students`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` int(11) NOT NULL,
+  `setting_key` varchar(50) NOT NULL,
+  `setting_value` text NOT NULL,
+  `created_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_on` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `setting_key`, `setting_value`) VALUES
+(1, 'timezone', 'Asia/Manila');
+
+--
+-- Indexes for table `settings`
+--
+
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `setting_key` (`setting_key`);
+
+--
+-- AUTO_INCREMENT for table `settings`
+--
+
+ALTER TABLE `settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

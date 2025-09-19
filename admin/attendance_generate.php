@@ -5,9 +5,12 @@
 		$contents = '';
 	 	
 	 	// 
-		$sql = "SELECT *, students.reference_number AS empid, attendance.id AS attid FROM attendance LEFT JOIN students ON students.id=attendance.reference_number WHERE date BETWEEN '$from' AND '$to' GROUP BY attendance.reference_number ORDER BY attendance.date ASC, attendance.time_in ASC";
+		$sql = "SELECT attendance.*, students.reference_number AS empid, students.firstname, students.lastname, attendance.id AS attid FROM attendance LEFT JOIN students ON students.id=attendance.reference_number WHERE attendance.date BETWEEN '$from' AND '$to' ORDER BY attendance.date ASC, attendance.time_in ASC";
 
 		$query = $conn->query($sql);
+		if (!$query) {
+			die('SQL Error: ' . $conn->error . '<br>Query: ' . $sql);
+		}
 		$total = 0;
 		while($row = $query->fetch_assoc()){
 			$empid = $row['empid'];
@@ -50,6 +53,8 @@
     $pdf->SetAutoPageBreak(TRUE, 10);  
     $pdf->SetFont('helvetica', '', 11);  
     $pdf->AddPage();  
+    $pdf->Image('../images/panpacificu-logo.jpg', 10, 10, 20, '', 'JPG'); // Add logo to top left
+    $pdf->SetY(20); // Move down to avoid overlapping the logo
     $content = '';  
     $content .= '
       	<h2 align="center">PanpacificU Library Attendance Sheet</h2>

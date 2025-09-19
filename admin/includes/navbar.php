@@ -15,6 +15,13 @@
 
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
+          <!-- Current Time Display -->
+          <li>
+            <a href="#" style="padding: 15px 10px;">
+              <i class="fa fa-clock-o"></i>
+              <span id="navbar-time"><?php echo date('g:i A'); ?></span>
+            </a>
+          </li>
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">

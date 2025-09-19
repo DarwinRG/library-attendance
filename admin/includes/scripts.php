@@ -116,3 +116,19 @@ $(function(){
   
 });
 </script>
+
+<script>
+// Live clock update for navbar
+function updateNavbarTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+    document.getElementById('navbar-time').textContent = timeString;
+}
+
+// Update navbar time every second
+setInterval(updateNavbarTime, 1000);
+</script>

@@ -24,7 +24,7 @@
 				if($query->num_rows > 0){
 					$sql = "UPDATE attendance SET time_in = NOW(), status = '$logstatus' WHERE reference_number = '$id'";
 					if($conn->query($sql)){
-						$output['message'] = 'Checked In By: <br>'.$row['firstname'].' '.$row['lastname'].'<br>'.$row['reference_number'].'<br>'.$row['program'];
+						$output['message'] = 'Time in: <b>'.$row['firstname'].' '.$row['lastname'].'</b><br>Program: '.$row['program'].'<br>Year Level: '.$row['year_level'];
 					}
 					else{
 						$output['error'] = true;
@@ -36,7 +36,7 @@
 					//
 					$sql = "INSERT INTO attendance (reference_number, date, time_in, status) VALUES ('$id', '$date_now', NOW(), '$logstatus')";
 					if($conn->query($sql)){
-						$output['message'] = 'Checked In By: <br>'.$row['firstname'].' '.$row['lastname'].'<br>'.$row['reference_number'].'<br>'.$row['program'];
+						$output['message'] = 'Time in: <b>'.$row['firstname'].' '.$row['lastname'].'</b><br>Program: '.$row['program'].'<br>Year Level: '.$row['year_level'];
 					}
 					else{
 						$output['error'] = true;

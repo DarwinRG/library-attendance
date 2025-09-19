@@ -1,6 +1,12 @@
 <?php include 'includes/session.php'; ?>
 <?php 
   include '../timezone.php'; 
+  include 'includes/timezone_helper.php';
+  
+  // Set timezone for display
+  setTimezoneFromDatabase($conn);
+  $current_timezone = getCurrentTimezone($conn);
+  
   $today = date('Y-m-d');
   $year = date('Y');
   if(isset($_GET['year'])){
@@ -51,6 +57,21 @@
           unset($_SESSION['success']);
         }
       ?>
+      <!-- Current Time Display -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="alert alert-info text-center" style="margin-bottom: 20px;">
+            <h3 style="margin: 0;">
+              <i class="fa fa-clock-o"></i> 
+              Current Time: <span id="dashboard-time"><?php echo date('F j, Y g:i:s A'); ?></span>
+              <small style="display: block; margin-top: 5px;">
+                Timezone: <?php echo $current_timezone; ?>
+              </small>
+            </h3>
+          </div>
+        </div>
+      </div>
+      
       <!-- Small boxes (Stat box) -->
       <div class="row">
         <div class="col-lg-3 col-xs-6">
@@ -156,7 +177,7 @@
                     <label>Select Year: </label>
                     <select class="form-control input-sm" id="select_year">
                       <?php
-                        for($i=2015; $i<=2065; $i++){
+                        for($i=2065; $i>=2015; $i--){
                           $selected = ($i==$year)?'selected':'';
                           echo "
                             <option value='".$i."' ".$selected.">".$i."</option>
@@ -285,6 +306,27 @@ $(function(){
     window.location.href = 'home.php?year='+$(this).val();
   });
 });
+</script>
+
+<script>
+// Live clock update for dashboard
+function updateDashboardTime() {
+    const now = new Date();
+    const timeString = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+    document.getElementById('dashboard-time').textContent = timeString;
+}
+
+// Update time every second
+setInterval(updateDashboardTime, 1000);
 </script>
 </body>
 </html>

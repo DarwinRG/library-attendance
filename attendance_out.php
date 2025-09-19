@@ -24,34 +24,40 @@
 			}
 			else {
 				$row = $query->fetch_assoc();			
-				$sql = "UPDATE attendance SET time_out = NOW(), status = 1 WHERE id = '".$row['uid']."'";
-				if($conn->query($sql)) {
-					$output['message'] = 'Checked Out By: <br>'.$row['firstname'].' '.$row['lastname'].'<br>'.$row['reference_number'].'<br>'.$row['program'];
-
-					$sql = "SELECT * FROM attendance WHERE id = '".$row['uid']."'";
-					$query = $conn->query($sql);
-					$urow = $query->fetch_assoc();
-
-					$time_in = $urow['time_in'];
-					$time_out = $urow['time_out'];
-
-					$time_in = new DateTime($time_in);
-					$time_out = new DateTime($time_out);
-					$interval = $time_in->diff($time_out);
-					$hrs = $interval->format('%h');
-					$mins = $interval->format('%i');
-					$mins = $mins/60;
-					$int = $hrs + $mins;
-					if($int > 4){
-					  $int = $int - 1;
-					}
-
-					$sql = "UPDATE attendance SET num_hr = '$int' WHERE id = '".$row['uid']."'";
-					$conn->query($sql);
+				if(!is_null($row['time_out'])){
+				    $output['error'] = true;
+				    $output['message'] = 'You have already checked out for today';
 				}
-				else{
-				$output['error'] = true;
-				$output['message'] = $conn->error;
+				else {
+					$sql = "UPDATE attendance SET time_out = NOW(), status = 1 WHERE id = '".$row['uid']."'";
+					if($conn->query($sql)) {
+						$output['message'] = 'Checked Out By: <br>'.$row['firstname'].' '.$row['lastname'].'<br>'.$row['reference_number'].'<br>'.$row['program'];
+
+						$sql = "SELECT * FROM attendance WHERE id = '".$row['uid']."'";
+						$query = $conn->query($sql);
+						$urow = $query->fetch_assoc();
+
+						$time_in = $urow['time_in'];
+						$time_out = $urow['time_out'];
+
+						$time_in = new DateTime($time_in);
+						$time_out = new DateTime($time_out);
+						$interval = $time_in->diff($time_out);
+						$hrs = $interval->format('%h');
+						$mins = $interval->format('%i');
+						$mins = $mins/60;
+						$int = $hrs + $mins;
+						if($int > 4){
+						  $int = $int - 1;
+						}
+
+						$sql = "UPDATE attendance SET num_hr = '$int' WHERE id = '".$row['uid']."'";
+						$conn->query($sql);
+					}
+					else{
+					$output['error'] = true;
+					$output['message'] = $conn->error;
+					}
 				}
 			}
 		}

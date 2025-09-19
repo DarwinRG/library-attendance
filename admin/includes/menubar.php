@@ -19,6 +19,8 @@
         
         <li><a href="attendance.php"><i class="fa fa-calendar"></i> <span>Attendance</span></a></li>
         <li><a href="students.php"><i class="fa fa-users"></i> Students</a></li>
+        <li class="header">SYSTEM</li>
+        <li><a href="settings.php"><i class="fa fa-cog"></i> <span>Settings</span></a></li>
       </ul>
     </section>
     <!-- /.sidebar -->

@@ -25,7 +25,7 @@
       		<div class="form-group has-feedback">
         		<input type="text" class="form-control input-lg" id="reference" pattern="[A-Za-z0-9]{1,15}" onkeyup="this.value = this.value.toUpperCase();"autocomplete="off" name="reference" placeholder="STUDENT ID" required style=" font-size: 20px;">
         		<span class="glyphicon glyphicon-user form-control-feedback"></span>
-      		</div>
+          </div>
       		<div class="row">
     			<div class="col-sm-6">
           			<button type="submit" class="btn btn-primary btn-block btn-flat" name="signin"><i class="fa fa-sign-in"></i> CHECK IN</button>

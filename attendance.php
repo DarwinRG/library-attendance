@@ -35,7 +35,7 @@
 					//
 					$sql = "INSERT INTO attendance (reference_number, date, time_in, status) VALUES ('$id', '$date_now', NOW(), '$logstatus')";
 					if($conn->query($sql)){
-						$output['message'] = 'Time in: '.$row['firstname'].' '.$row['lastname'];
+						$output['message'] = 'Time in: <b>'.$row['firstname'].' '.$row['lastname'].'</b><br>Program: '.$row['program'].'<br>Year Level: '.$row['year_level'];
 					}
 					else{
 						$output['error'] = true;
@@ -52,12 +52,7 @@
 				}
 				else{
 					$row = $query->fetch_assoc();
-					if($row['time_out'] != '00:00:00'){
-						$output['error'] = true;
-						$output['message'] = 'You have timed out for today';
-					}
-					else{
-						
+					if(is_null($row['time_out'])){
 						$sql = "UPDATE attendance SET time_out = NOW(), status = 1 WHERE id = '".$row['uid']."'";
 						if($conn->query($sql)){
 							$output['message'] = 'Time out: '.$row['firstname'].' '.$row['lastname'];
@@ -100,7 +95,10 @@
 							$output['message'] = $conn->error;
 						}
 					}
-					
+					else{
+						$output['error'] = true;
+						$output['message'] = 'You have timed out for today';
+					}
 				}
 			}
 		}
