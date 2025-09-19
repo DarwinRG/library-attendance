@@ -28,24 +28,19 @@
 	include 'includes/header.php';
 ?>
 
-<body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
-
+<body>
   <?php include 'includes/navbar.php'; ?>
   <?php include 'includes/menubar.php'; ?>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Settings
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="home.php"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Settings</li>
-      </ol>
-    </section>
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Content Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0">System Settings</h1>
+        <p class="text-muted mb-0">Configure system preferences and timezone</p>
+      </div>
+    </div>
 
     <!-- Main content -->
     <section class="content">
@@ -73,23 +68,19 @@
       ?>
       
       <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">System Settings</h3>
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <span class="material-icons me-2">schedule</span>
+                Timezone Settings
+              </h5>
             </div>
-            <div class="box-body">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h4><i class="fa fa-clock-o"></i> Timezone Settings</h4>
-                    </div>
-                    <div class="panel-body">
-                      <form method="POST">
-                        <div class="form-group">
-                          <label for="timezone">Select Timezone:</label>
-                          <select class="form-control" name="timezone" id="timezone" required>
+            <div class="card-body">
+              <form method="POST">
+                <div class="mb-3">
+                  <label for="timezone" class="form-label">Select Timezone:</label>
+                  <select class="form-select" name="timezone" id="timezone" required>
                             <option value="Asia/Manila" <?php echo ($current_timezone == 'Asia/Manila') ? 'selected' : ''; ?>>Asia/Manila (Philippines)</option>
                             <option value="Asia/Tokyo" <?php echo ($current_timezone == 'Asia/Tokyo') ? 'selected' : ''; ?>>Asia/Tokyo (Japan)</option>
                             <option value="Asia/Seoul" <?php echo ($current_timezone == 'Asia/Seoul') ? 'selected' : ''; ?>>Asia/Seoul (South Korea)</option>
@@ -111,54 +102,55 @@
                             <option value="Australia/Sydney" <?php echo ($current_timezone == 'Australia/Sydney') ? 'selected' : ''; ?>>Australia/Sydney</option>
                             <option value="Pacific/Auckland" <?php echo ($current_timezone == 'Pacific/Auckland') ? 'selected' : ''; ?>>Pacific/Auckland (New Zealand)</option>
                           </select>
-                        </div>
-                        <button type="submit" name="update_timezone" class="btn btn-primary">
-                          <i class="fa fa-save"></i> Update Timezone
-                        </button>
-                      </form>
-                    </div>
-                  </div>
                 </div>
-                
-                <div class="col-md-6">
-                  <div class="panel panel-info">
-                    <div class="panel-heading">
-                      <h4><i class="fa fa-clock-o"></i> Current Time</h4>
-                    </div>
-                    <div class="panel-body">
-                      <div class="text-center">
-                        <h2 id="current-time"><?php echo $current_time_formatted; ?></h2>
-                        <p class="text-muted">
-                          <strong>Timezone:</strong> <?php echo $timezone_name; ?><br>
-                          <strong>Date:</strong> <?php echo date('l, F j, Y'); ?><br>
-                          <strong>Time:</strong> <span id="live-time"><?php echo date('g:i:s A'); ?></span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="panel panel-success">
-                    <div class="panel-heading">
-                      <h4><i class="fa fa-info-circle"></i> System Information</h4>
-                    </div>
-                    <div class="panel-body">
-                      <p><strong>Server Time:</strong> <?php echo $current_time; ?></p>
-                      <p><strong>PHP Version:</strong> <?php echo phpversion(); ?></p>
-                      <p><strong>Database:</strong> MySQL</p>
-                      <p><strong>System:</strong> PanpacificU Library Attendance System</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                <button type="submit" name="update_timezone" class="btn btn-primary d-flex align-items-center">
+                  <span class="material-icons me-1">save</span>
+                  Update Timezone
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <div class="card mb-3">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <span class="material-icons me-2">access_time</span>
+                Current Time
+              </h5>
+            </div>
+            <div class="card-body text-center">
+              <h2 id="current-time" class="text-primary"><?php echo $current_time_formatted; ?></h2>
+              <p class="text-muted">
+                <strong>Timezone:</strong> <?php echo $timezone_name; ?><br>
+                <strong>Date:</strong> <?php echo date('l, F j, Y'); ?><br>
+                <strong>Time:</strong> <span id="live-time"><?php echo date('g:i:s A'); ?></span>
+              </p>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <span class="material-icons me-2">info</span>
+                System Information
+              </h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Server Time:</strong> <?php echo $current_time; ?></p>
+              <p><strong>PHP Version:</strong> <?php echo phpversion(); ?></p>
+              <p><strong>Database:</strong> MySQL</p>
+              <p><strong>System:</strong> PanpacificU Library Attendance System</p>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 
   <?php include 'includes/footer.php'; ?>
-</div>
+</body>
 <?php include 'includes/scripts.php'; ?>
 
 <script>

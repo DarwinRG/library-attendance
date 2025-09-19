@@ -5,7 +5,7 @@
 		$contents = '';
 	 	
 	 	// 
-		$sql = "SELECT attendance.*, students.reference_number AS empid, students.firstname, students.lastname, attendance.id AS attid FROM attendance LEFT JOIN students ON students.id=attendance.reference_number WHERE attendance.date BETWEEN '$from' AND '$to' ORDER BY attendance.date ASC, attendance.time_in ASC";
+		$sql = "SELECT attendance.*, students.reference_number AS empid, students.firstname, students.lastname, attendance.id AS attid, purposes.name AS purpose_name FROM attendance LEFT JOIN students ON students.id=attendance.reference_number LEFT JOIN purposes ON purposes.id=attendance.purpose_id WHERE attendance.date BETWEEN '$from' AND '$to' ORDER BY attendance.date ASC, attendance.time_in ASC";
 
 		$query = $conn->query($sql);
 		if (!$query) {
@@ -22,6 +22,7 @@
                 <td>'.$row['empid'].'</td>
                 <td>'.date('h:i A', strtotime($row['time_in'])).'</td>
                 <td>'.($row['time_out'] ? date('h:i A', strtotime($row['time_out'])) : '-').'</td>
+                <td>'.($row['purpose_name'] ? $row['purpose_name'] : '-').'</td>
 				
 			</tr>
 			';
@@ -61,11 +62,12 @@
       	<h4 align="center">'.$from_title." - ".$to_title.'</h4>
       	<table border="1" cellspacing="0" cellpadding="3">  
            <tr>  
-				  <th width="20%"><b>Date</b></th>
-                  <th width="40%"><b>Full Name</b></th>
-                  <th width="20%"><b>Student ID</b></th>
+				  <th width="15%"><b>Date</b></th>
+                  <th width="30%"><b>Full Name</b></th>
+                  <th width="15%"><b>Student ID</b></th>
                   <th width="10%"><b>Time In</b></th>
                   <th width="10%"><b>Time Out</b></th>
+                  <th width="20%"><b>Purpose</b></th>
            </tr>  
       ';  
     $content .= generateRow($from, $to, $conn);  

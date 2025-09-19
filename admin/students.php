@@ -1,116 +1,143 @@
 <?php include 'includes/session.php'; ?>
 <?php include 'includes/header.php'; ?>
-<body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
-
+<body>
   <?php include 'includes/navbar.php'; ?>
   <?php include 'includes/menubar.php'; ?>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Students List
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li>Students</li>
-        <li class="active">Students List</li>
-      </ol>
-    </section>
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Content Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0">Students Management</h1>
+        <p class="text-muted mb-0">Manage student information and records</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="#addnew" data-bs-toggle="modal" class="btn btn-primary d-flex align-items-center">
+          <span class="material-icons me-1">add</span>
+          Add New Student
+        </a>
+      </div>
+    </div>
+
     <!-- Main content -->
-    <section class="content">
+    <div class="content">
       <?php
         if(isset($_SESSION['error'])){
           echo "
-            <div class='alert alert-danger alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-              <h4><i class='icon fa fa-warning'></i> Error!</h4>
+            <div class='alert alert-danger alert-dismissible fade show' role='alert'>
               ".$_SESSION['error']."
+              <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
             </div>
           ";
           unset($_SESSION['error']);
         }
         if(isset($_SESSION['success'])){
           echo "
-            <div class='alert alert-success alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-              <h4><i class='icon fa fa-check'></i> Success!</h4>
+            <div class='alert alert-success alert-dismissible fade show' role='alert'>
               ".$_SESSION['success']."
+              <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
             </div>
           ";
           unset($_SESSION['success']);
         }
       ?>
       <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header with-border">
-               <a href="#addnew" data-toggle="modal" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus"></i> New</a>
-               <a href="download.php" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus"></i> Bulk Import</a>
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">Students List</h5>
+              <div class="d-flex gap-2">
+                <a href="download.php" class="btn btn-outline-primary btn-sm d-flex align-items-center">
+                  <span class="material-icons me-1">upload</span>
+                  Bulk Import
+                </a>
+              </div>
             </div>
-            <div class="box-body">
-              <table id="example1" class="table table-bordered">
-                <thead>
-                  <th>Student ID</th>
-                  <th>Full Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Address</th>
-                  <th>Program</th>
-                  <th>Year Level</th>
-                  <th>Tools</th>
-                </thead>
-                <tbody>
-                  <?php
-                    $sql = "SELECT * FROM students";
-                    $query = $conn->query($sql);
-                    while($row = $query->fetch_assoc()){
-                      ?>
-                        <tr>
-                          <td><?php echo $row['reference_number']; ?></td>
-                          <td><?php echo $row['firstname'].' '.$row['lastname']; ?></td>
-                          <td><?php echo $row['email'] ? $row['email'] : '-'; ?></td>
-                          <td><?php echo $row['phone'] ? $row['phone'] : '-'; ?></td>
-                          <td><?php echo $row['address'] ? $row['address'] : '-'; ?></td>
-                          <td><?php echo $row['program']; ?></td>
-                          <td><?php echo $row['year_level']; ?></td>
-                          <td>
-                            <button class="btn btn-success btn-sm edit btn-flat" data-id="<?php echo $row['id']; ?>"><i class="fa fa-edit"></i> Edit</button>
-                            <button class="btn btn-danger btn-sm delete btn-flat" data-id="<?php echo $row['id']; ?>"><i class="fa fa-trash"></i> Delete</button>
-                          </td>
-                        </tr>
-                      <?php
-                    }
-                  ?>
-                </tbody>
-              </table>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="example1" class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Student ID</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Address</th>
+                      <th>Program</th>
+                      <th>Year Level</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      $sql = "SELECT * FROM students";
+                      $query = $conn->query($sql);
+                      while($row = $query->fetch_assoc()){
+                        ?>
+                          <tr>
+                            <td><strong><?php echo $row['reference_number']; ?></strong></td>
+                            <td><?php echo $row['firstname'].' '.$row['lastname']; ?></td>
+                            <td><?php echo $row['email'] ? $row['email'] : '-'; ?></td>
+                            <td><?php echo $row['phone'] ? $row['phone'] : '-'; ?></td>
+                            <td><?php echo $row['address'] ? $row['address'] : '-'; ?></td>
+                            <td><span class="badge bg-info"><?php echo $row['program']; ?></span></td>
+                            <td><span class="badge bg-secondary"><?php echo $row['year_level']; ?></span></td>
+                            <td>
+                              <button class="btn btn-primary btn-sm edit" data-id="<?php echo $row['id']; ?>">
+                                <span class="material-icons">edit</span>
+                              </button>
+                              <button class="btn btn-danger btn-sm delete" data-id="<?php echo $row['id']; ?>">
+                                <span class="material-icons">delete</span>
+                              </button>
+                            </td>
+                          </tr>
+                        <?php
+                      }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>   
+    </div>
   </div>
     
   <?php include 'includes/footer.php'; ?>
   <?php include 'includes/employee_modal.php'; ?>
-</div>
 <?php include 'includes/scripts.php'; ?>
 <script>
-$(function(){
+$(document).ready(function(){
+  
   $('.edit').click(function(e){
     e.preventDefault();
-    $('#edit').modal('show');
     var id = $(this).data('id');
-    getRow(id);
+    
+    var modalElement = document.getElementById('edit_student');
+    
+    if (!modalElement) {
+      alert('Modal element not found!');
+      return;
+    }
+    
+    getRow(id, function() {
+      try {
+        var editModal = new bootstrap.Modal(modalElement);
+        editModal.show();
+      } catch (error) {
+        alert('Error showing modal: ' + error.message);
+      }
+    });
   });
 
   $('.delete').click(function(e){
     e.preventDefault();
-    $('#delete').modal('show');
     var id = $(this).data('id');
     getRow(id);
+    var deleteModal = new bootstrap.Modal(document.getElementById('delete_student'));
+    deleteModal.show();
   });
 
   $('.photo').click(function(e){
@@ -121,26 +148,35 @@ $(function(){
 
 });
 
-function getRow(id){
+function getRow(id, callback){
   $.ajax({
     type: 'POST',
     url: 'employee_row.php',
     data: {id:id},
     dataType: 'json',
     success: function(response){
-      $('.empid').val(response.id);
+      if(response.error) {
+        alert('Error: ' + response.error);
+        return;
+      }
+      
+      $('.studid').val(response.id);
       $('.reference_number').html(response.reference_number);
       $('.del_student_name').html(response.firstname+' '+response.lastname);
       $('#student_name').html(response.firstname+' '+response.lastname);
       $('#edit_reference_number').val(response.reference_number);
       $('#edit_firstname').val(response.firstname);
       $('#edit_lastname').val(response.lastname);
-      $('#edit_mname').val(response.mname || '');
+      // $('#edit_mname').val(response.mname || ''); // Middle name field not present in modal
       $('#edit_email').val(response.email || '');
       $('#edit_phone').val(response.phone || '');
       $('#edit_address').val(response.address || '');
       $('#edit_program').val(response.program);
       $('#edit_year_level').val(response.year_level);
+      if(callback) callback();
+    },
+    error: function(xhr, status, error) {
+      alert('Error loading student data. Please try again.');
     }
   });
 }

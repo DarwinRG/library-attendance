@@ -3,9 +3,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
           	<div class="modal-header">
-            	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              		<span aria-hidden="true">&times;</span></button>
             	<h4 class="modal-title"><b>Add Attendance</b></h4>
+            	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           	</div>
           	<div class="modal-body">
             	<form class="form-horizontal" method="POST" action="attendance_add.php">
@@ -45,8 +44,8 @@
                 </div>
           	</div>
           	<div class="modal-footer">
-            	<button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            	<button type="submit" class="btn btn-primary btn-flat" name="add"><i class="fa fa-save"></i> Save</button>
+            	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            	<button type="submit" class="btn btn-primary" name="add">Save</button>
             	</form>
           	</div>
         </div>
@@ -54,13 +53,12 @@
 </div>
 
 <!-- Edit -->
-<div class="modal fade" id="edit">
+<div class="modal fade" id="edit_attendance">
     <div class="modal-dialog">
         <div class="modal-content">
           	<div class="modal-header">
-            	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              		<span aria-hidden="true">&times;</span></button>
             	<h4 class="modal-title"><b><span id="employee_name"></span></b></h4>
+            	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           	</div>
           	<div class="modal-body">
             	<form class="form-horizontal" method="POST" action="attendance_edit.php">
@@ -94,8 +92,8 @@
                 </div>
           	</div>
           	<div class="modal-footer">
-            	<button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            	<button type="submit" class="btn btn-success btn-flat" name="edit"><i class="fa fa-check-square-o"></i> Update</button>
+            	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            	<button type="submit" class="btn btn-success" name="edit">Update</button>
             	</form>
           	</div>
         </div>
@@ -103,13 +101,12 @@
 </div>
 
 <!-- Delete -->
-<div class="modal fade" id="delete">
+<div class="modal fade" id="delete_attendance">
     <div class="modal-dialog">
         <div class="modal-content">
           	<div class="modal-header">
-            	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              		<span aria-hidden="true">&times;</span></button>
             	<h4 class="modal-title"><b><span id="attendance_date"></span></b></h4>
+            	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           	</div>
           	<div class="modal-body">
             	<form class="form-horizontal" method="POST" action="attendance_delete.php">
@@ -120,8 +117,8 @@
 	            	</div>
           	</div>
           	<div class="modal-footer">
-            	<button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            	<button type="submit" class="btn btn-danger btn-flat" name="delete"><i class="fa fa-trash"></i> Delete</button>
+            	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            	<button type="submit" class="btn btn-danger" name="delete">Delete</button>
             	</form>
           	</div>
         </div>

@@ -1,55 +1,54 @@
-<header class="main-header">
-    <!-- Logo -->
-    <a href="home.php" class="logo">
-      <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>PanpacificU</b> Library Attendance</span>
-      <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>PanpacificU</b> Library Attendance</span>
-    </a>
-    <!-- Header Navbar: style can be found in header.less -->
-    <nav class="navbar navbar-static-top">
-      <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!-- Current Time Display -->
-          <li>
-            <a href="#" style="padding: 15px 10px;">
-              <i class="fa fa-clock-o"></i>
-              <span id="navbar-time"><?php echo date('g:i A'); ?></span>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="home.php">
+            <span class="material-icons me-2">school</span>
+            PanpacificU Library Admin
+        </a>
+        
+        <div class="navbar-nav">
+            <a class="nav-link text-white d-flex align-items-center me-3" href="../index.php">
+                <span class="material-icons me-2">home</span>
+                <span class="d-none d-md-inline">Home</span>
             </a>
-          </li>
-          <!-- User Account: style can be found in dropdown.less -->
-          <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="<?php echo (!empty($user['photo'])) ? '../images/'.$user['photo'] : '../images/profile.jpg'; ?>" class="user-image" alt="User Image">
-              <span class="hidden-xs"><?php echo $user['firstname'].' '.$user['lastname']; ?></span>
-            </a>
-            <ul class="dropdown-menu">
-              <!-- User image -->
-              <li class="user-header">
-                <img src="<?php echo (!empty($user['photo'])) ? '../images/'.$user['photo'] : '../images/profile.jpg'; ?>" class="img-circle" alt="User Image">
-
-                <p>
-                  <?php echo $user['firstname'].' '.$user['lastname']; ?>
-                  <small>Member since <?php echo date('M. Y', strtotime($user['created_on'])); ?></small>
-                </p>
-              </li>
-              <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#profile" data-toggle="modal" class="btn btn-default btn-flat" id="admin_profile">Update</a>
-                </div>
-                <div class="pull-right">
-                  <a href="logout.php" class="btn btn-default btn-flat">Sign out</a>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </header>
-  <?php include 'includes/profile_modal.php'; ?>
+        </div>
+        
+        <div class="navbar-nav ms-auto">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                    <span class="material-icons me-2">access_time</span>
+                    <span id="navbar-time"><?php echo date('g:i A'); ?></span>
+                </a>
+            </div>
+            
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                    <img src="<?php echo (!empty($user['photo'])) ? '../images/'.$user['photo'] : '../images/profile.jpg'; ?>" class="rounded-circle me-2" width="32" height="32" alt="Profile">
+                    <span class="d-none d-md-inline"><?php echo $user['firstname'].' '.$user['lastname']; ?></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li class="dropdown-header">
+                        <div class="text-center">
+                            <img src="<?php echo (!empty($user['photo'])) ? '../images/'.$user['photo'] : '../images/profile.jpg'; ?>" class="rounded-circle mb-2" width="60" height="60" alt="Profile">
+                            <h6 class="mb-0"><?php echo $user['firstname'].' '.$user['lastname']; ?></h6>
+                            <small class="text-muted">Member since <?php echo date('M. Y', strtotime($user['created_on'])); ?></small>
+                        </div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" href="#profile" data-bs-toggle="modal" id="admin_profile">
+                            <span class="material-icons me-2">edit</span>
+                            Update Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="logout.php">
+                            <span class="material-icons me-2">logout</span>
+                            Sign Out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<?php include 'includes/profile_modal.php'; ?>

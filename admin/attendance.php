@@ -1,128 +1,151 @@
 <?php include 'includes/session.php'; ?>
 <?php include 'includes/header.php'; ?>
-<body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
-
+<body>
   <?php include 'includes/navbar.php'; ?>
   <?php include 'includes/menubar.php'; ?>
   <?php
     include '../timezone.php';
-    $range_to = date('m/d/Y');
-    $range_from = date('m/d/Y', strtotime('-30 day', strtotime($range_to)));
+    
+    // Handle date range from URL parameter
+    if(isset($_GET['range'])){
+      $range = $_GET['range'];
+      $ex = explode(' - ', $range);
+      $range_from = $ex[0];
+      $range_to = $ex[1];
+    } else {
+      $range_to = date('m/d/Y');
+      $range_from = date('m/d/Y', strtotime('-30 day', strtotime($range_to)));
+    }
   ?>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Attendance
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Attendance</li>
-      </ol>
-    </section>
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Content Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0">Attendance Management</h1>
+        <p class="text-muted mb-0">View and manage student attendance records</p>
+      </div>
+    </div>
+
     <!-- Main content -->
-    <section class="content">
+    <div class="content">
       <?php
         if(isset($_SESSION['error'])){
           echo "
-            <div class='alert alert-danger alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-              <h4><i class='icon fa fa-warning'></i> Error!</h4>
+            <div class='alert alert-danger alert-dismissible fade show' role='alert'>
               ".$_SESSION['error']."
+              <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
             </div>
           ";
           unset($_SESSION['error']);
         }
         if(isset($_SESSION['success'])){
           echo "
-            <div class='alert alert-success alert-dismissible'>
-              <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-              <h4><i class='icon fa fa-check'></i> Success!</h4>
+            <div class='alert alert-success alert-dismissible fade show' role='alert'>
               ".$_SESSION['success']."
+              <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
             </div>
           ";
           unset($_SESSION['success']);
         }
       ?>
       <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header with-border">
-              <div class="pull-right">
-                <form method="POST" class="form-inline" id="payForm">
-                  <div class="input-group">
-                    <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
-                    </div>
-                    <input type="text" class="form-control pull-right col-sm-8" id="reservation" name="date_range" value="<?php echo (isset($_GET['range'])) ? $_GET['range'] : $range_from.' - '.$range_to; ?>">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">Attendance List</h5>
+              <div class="d-flex align-items-center gap-2">
+                <form method="POST" class="d-flex align-items-center" id="payForm">
+                  <div class="input-group me-2" style="min-width: 300px;">
+                    <span class="input-group-text bg-white border-end-0">
+                      <span class="material-icons text-muted">date_range</span>
+                    </span>
+                    <input type="text" class="form-control border-start-0" id="reservation" name="date_range" value="<?php echo (isset($_GET['range'])) ? $_GET['range'] : $range_from.' - '.$range_to; ?>" placeholder="Select date range">
                   </div>
-                  <button type="button" class="btn btn-success btn-sm btn-flat" id="print_attend"><span class="glyphicon glyphicon-print"></span> Attendance</button>
+                  <button type="button" class="btn btn-success btn-sm d-flex align-items-center" id="print_attend">
+                    <span class="material-icons me-1">print</span>
+                    Generate Report
+                  </button>
                 </form>
               </div>
             </div>
-            <div class="box-body">
-              <table id="example1" class="table table-bordered">
-                <thead>
-                  <th class="hidden"></th>
-                  <th>Date</th>
-                  <th>Student ID</th>
-                  <th>Full Name</th>
-                  <th>Time In</th>
-                  <th>Time Out</th>
-                  <th>Tools</th>
-                </thead>
-                <tbody>
-                  <?php
-                    $sql = "SELECT *, students.reference_number AS empid, attendance.id AS attid FROM attendance LEFT JOIN students ON students.id=attendance.reference_number ORDER BY attendance.date DESC, attendance.time_in DESC";
-                    $query = $conn->query($sql);
-                    while($row = $query->fetch_assoc()){
-                      $status = ($row['status'])?'<span class="label label-warning pull-right">Out</span>':'<span class="label label-danger pull-right">In</span>';
-                      echo "
-                        <tr>
-                          <td class='hidden'></td>
-                          <td>".date('M d, Y', strtotime($row['date']))."</td>
-                          <td>".$row['empid']."</td>
-                          <td>".$row['firstname'].' '.$row['lastname']."</td>
-                          <td>".date('h:i A', strtotime($row['time_in'])).$status."</td>
-                          <td>".($row['time_out'] ? date('h:i A', strtotime($row['time_out'])) : '-')."</td>
-                          <td>
-                            <button class='btn btn-success btn-sm btn-flat edit' data-id='".$row['attid']."'><i class='fa fa-edit'></i> Edit</button>
-                            <button class='btn btn-danger btn-sm btn-flat delete' data-id='".$row['attid']."'><i class='fa fa-trash'></i> Delete</button>
-                          </td>
-                        </tr>
-                      ";
-                    }
-                  ?>
-                </tbody>
-              </table>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="example1" class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Student ID</th>
+                      <th>Full Name</th>
+                      <th>Time In</th>
+                      <th>Time Out</th>
+                      <th>Purpose</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      // Convert date range to proper format for SQL
+                      $from_date = date('Y-m-d', strtotime($range_from));
+                      $to_date = date('Y-m-d', strtotime($range_to));
+                      
+                      $sql = "SELECT *, students.reference_number AS empid, attendance.id AS attid, purposes.name AS purpose_name FROM attendance LEFT JOIN students ON students.id=attendance.reference_number LEFT JOIN purposes ON purposes.id=attendance.purpose_id WHERE attendance.date BETWEEN '$from_date' AND '$to_date' ORDER BY attendance.date DESC, attendance.time_in DESC";
+                      $query = $conn->query($sql);
+                      while($row = $query->fetch_assoc()){
+                        $status = ($row['status']) ? '<span class="badge bg-warning">Checked Out</span>' : '<span class="badge bg-success">Checked In</span>';
+                        echo "
+                          <tr>
+                            <td>".date('M d, Y', strtotime($row['date']))."</td>
+                            <td>".$row['empid']."</td>
+                            <td>".$row['firstname'].' '.$row['lastname']."</td>
+                            <td>".date('h:i A', strtotime($row['time_in']))."</td>
+                            <td>".($row['time_out'] ? date('h:i A', strtotime($row['time_out'])) : '-')."</td>
+                            <td>".($row['purpose_name'] ? $row['purpose_name'] : '-')."</td>
+                            <td>".$status."</td>
+                            <td>
+                              <button class='btn btn-primary btn-sm edit' data-id='".$row['attid']."'>
+                                <span class='material-icons'>edit</span>
+                              </button>
+                              <button class='btn btn-danger btn-sm delete' data-id='".$row['attid']."'>
+                                <span class='material-icons'>delete</span>
+                              </button>
+                            </td>
+                          </tr>
+                        ";
+                      }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>   
+    </div>
   </div>
     
   <?php include 'includes/footer.php'; ?>
   <?php include 'includes/attendance_modal.php'; ?>
-</div>
+</body>
 <?php include 'includes/scripts.php'; ?>
 <script>
 $(function(){
   $('.edit').click(function(e){
     e.preventDefault();
-    $('#edit').modal('show');
     var id = $(this).data('id');
     getRow(id);
+    var editModal = new bootstrap.Modal(document.getElementById('edit_attendance'));
+    editModal.show();
   });
 
   $('.delete').click(function(e){
     e.preventDefault();
-    $('#delete').modal('show');
     var id = $(this).data('id');
     getRow(id);
+    var deleteModal = new bootstrap.Modal(document.getElementById('delete_attendance'));
+    deleteModal.show();
   });
 });
 
@@ -141,14 +164,17 @@ function getRow(id){
       $('#employee_name').html(response.firstname+' '+response.lastname);
       $('#del_attid').val(response.attid);
       $('#del_employee_name').html(response.firstname+' '+response.lastname);
+    },
+    error: function(xhr, status, error) {
+      alert('Error loading attendance data. Please try again.');
     }
   });
 }
 
-// $("#reservation").on('change', function(){
-//     var range = encodeURI($(this).val());
-//     window.location = 'attendance.php?range='+range;
-//   });
+$("#reservation").on('apply.daterangepicker', function(ev, picker){
+    var range = encodeURI($(this).val());
+    window.location = 'attendance.php?range='+range;
+});
 
   $('#print_attend').click(function(e){
     e.preventDefault();

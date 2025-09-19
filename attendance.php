@@ -7,6 +7,7 @@
 
 		$employee = $_POST['employee'];
 		$status = $_POST['status'];
+		$purpose = isset($_POST['purpose']) ? $_POST['purpose'] : null;
 
 		$sql = "SELECT * FROM students WHERE reference_number = '$employee'";
 		$query = $conn->query($sql);
@@ -33,7 +34,7 @@
 					// $srow = $squery->fetch_assoc();
 					$logstatus = 0;
 					//
-					$sql = "INSERT INTO attendance (reference_number, date, time_in, status) VALUES ('$id', '$date_now', NOW(), '$logstatus')";
+					$sql = "INSERT INTO attendance (reference_number, date, time_in, status, purpose_id) VALUES ('$id', '$date_now', NOW(), '$logstatus', '$purpose')";
 					if($conn->query($sql)){
 						$output['message'] = 'Time in: <b>'.$row['firstname'].' '.$row['lastname'].'</b><br>Program: '.$row['program'].'<br>Year Level: '.$row['year_level'];
 					}
@@ -48,7 +49,7 @@
 				$query = $conn->query($sql);
 				if($query->num_rows < 1){
 					$output['error'] = true;
-					$output['message'] = 'Cannot Timeout. No time in.';
+					$output['message'] = 'Cannot Check Out. No time in.';
 				}
 				else{
 					$row = $query->fetch_assoc();
@@ -97,7 +98,7 @@
 					}
 					else{
 						$output['error'] = true;
-						$output['message'] = 'You have timed out for today';
+						$output['message'] = 'You have already checked out for today';
 					}
 				}
 			}

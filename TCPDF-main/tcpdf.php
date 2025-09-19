@@ -4175,6 +4175,8 @@ class TCPDF {
 	 * @since 5.9.000 (2010-09-28)
 	 */
 	public function getRawCharWidth($char) {
+		// Cast char to int to avoid deprecation warning in PHP 8.1+
+		$char = (int) $char;
 		if ($char == 173) {
 			// SHY character will not be printed
 			return (0);
@@ -7125,10 +7127,11 @@ class TCPDF {
 					$info = false;
 				}
 			}
-			if (($info === false) AND extension_loaded('imagick')) {
+			if (($info === false) AND extension_loaded('imagick') AND class_exists('Imagick')) {
 				try {
 					// ImageMagick library
-					$img = new Imagick();
+					/** @var \Imagick $img */
+					$img = new \Imagick();
 					if ($type == 'svg') {
 						if ($file[0] === '@') {
 							// image from string
@@ -7311,16 +7314,17 @@ class TCPDF {
 		$parsed = false;
 		$parse_error = '';
 		// ImageMagick extension
-		if (($parsed === false) AND extension_loaded('imagick')) {
+		if (($parsed === false) AND extension_loaded('imagick') AND class_exists('Imagick')) {
 			try {
 				// ImageMagick library
-				$img = new Imagick();
+				/** @var \Imagick $img */
+				$img = new \Imagick();
 				$img->readImage($file);
 				// clone image object
 				$imga = TCPDF_STATIC::objclone($img);
 				// extract alpha channel
-				if (method_exists($img, 'setImageAlphaChannel') AND defined('Imagick::ALPHACHANNEL_EXTRACT')) {
-					$img->setImageAlphaChannel(Imagick::ALPHACHANNEL_EXTRACT);
+				if (method_exists($img, 'setImageAlphaChannel') AND class_exists('Imagick') AND defined('Imagick::ALPHACHANNEL_EXTRACT')) {
+					$img->setImageAlphaChannel(\Imagick::ALPHACHANNEL_EXTRACT);
 				} else {
 					$img->separateImageChannel(8); // 8 = (imagick::CHANNEL_ALPHA | imagick::CHANNEL_OPACITY | imagick::CHANNEL_MATTE);
 					$img->negateImage(true);
@@ -10965,7 +10969,7 @@ class TCPDF {
 			if (extension_loaded('openssl') && !in_array('aes-256-cbc', openssl_get_cipher_methods())) {
 				$this->Error('AES encryption requires openssl/aes-256-cbc cypher.');
 			}
-			if (extension_loaded('mcrypt') && mcrypt_get_cipher_name(MCRYPT_RIJNDAEL_128) === false) {
+			if (extension_loaded('mcrypt') && function_exists('mcrypt_get_cipher_name') && defined('MCRYPT_RIJNDAEL_128') && mcrypt_get_cipher_name(MCRYPT_RIJNDAEL_128) === false) {
 				$this->Error('AES encryption requires MCRYPT_RIJNDAEL_128 cypher.');
 			}
 			if (($mode == 3) AND !function_exists('hash')) {
