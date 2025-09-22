@@ -63,9 +63,14 @@
                     </span>
                     <input type="text" class="form-control border-start-0" id="reservation" name="date_range" value="<?php echo (isset($_GET['range'])) ? $_GET['range'] : $range_from.' - '.$range_to; ?>" placeholder="Select date range">
                   </div>
+                  <select class="form-select me-2" name="export_format" id="export_format" style="width: auto;">
+                    <option value="pdf">PDF</option>
+                    <option value="csv">CSV</option>
+                    <option value="excel">Excel</option>
+                  </select>
                   <button type="button" class="btn btn-success btn-sm d-flex align-items-center" id="print_attend">
-                    <span class="material-icons me-1">print</span>
-                    Generate Report
+                    <span class="material-icons me-1">download</span>
+                    Export Report
                   </button>
                 </form>
               </div>
@@ -78,6 +83,7 @@
                       <th>Date</th>
                       <th>Student ID</th>
                       <th>Full Name</th>
+                      <th>Program</th>
                       <th>Time In</th>
                       <th>Time Out</th>
                       <th>Purpose</th>
@@ -91,7 +97,7 @@
                       $from_date = date('Y-m-d', strtotime($range_from));
                       $to_date = date('Y-m-d', strtotime($range_to));
                       
-                      $sql = "SELECT *, students.reference_number AS empid, attendance.id AS attid, purposes.name AS purpose_name FROM attendance LEFT JOIN students ON students.id=attendance.reference_number LEFT JOIN purposes ON purposes.id=attendance.purpose_id WHERE attendance.date BETWEEN '$from_date' AND '$to_date' ORDER BY attendance.date DESC, attendance.time_in DESC";
+                      $sql = "SELECT *, students.reference_number AS empid, students.program, attendance.id AS attid, purposes.name AS purpose_name FROM attendance LEFT JOIN students ON students.id=attendance.reference_number LEFT JOIN purposes ON purposes.id=attendance.purpose_id WHERE attendance.date BETWEEN '$from_date' AND '$to_date' ORDER BY attendance.date DESC, attendance.time_in DESC";
                       $query = $conn->query($sql);
                       while($row = $query->fetch_assoc()){
                         $status = ($row['status']) ? '<span class="badge bg-warning">Checked Out</span>' : '<span class="badge bg-success">Checked In</span>';
@@ -100,6 +106,7 @@
                             <td>".date('M d, Y', strtotime($row['date']))."</td>
                             <td>".$row['empid']."</td>
                             <td>".$row['firstname'].' '.$row['lastname']."</td>
+                            <td>".($row['program'] ? $row['program'] : '-')."</td>
                             <td>".date('h:i A', strtotime($row['time_in']))."</td>
                             <td>".($row['time_out'] ? date('h:i A', strtotime($row['time_out'])) : '-')."</td>
                             <td>".($row['purpose_name'] ? $row['purpose_name'] : '-')."</td>
@@ -178,7 +185,16 @@ $("#reservation").on('apply.daterangepicker', function(ev, picker){
 
   $('#print_attend').click(function(e){
     e.preventDefault();
-    $('#payForm').attr('action', 'attendance_generate.php');
+    var exportFormat = $('#export_format').val();
+    
+    if(exportFormat === 'pdf') {
+      $('#payForm').attr('action', 'attendance_generate.php');
+    } else if(exportFormat === 'csv') {
+      $('#payForm').attr('action', 'attendance_export_csv.php');
+    } else if(exportFormat === 'excel') {
+      $('#payForm').attr('action', 'attendance_export_excel.php');
+    }
+    
     $('#payForm').submit();
   });
 </script>

@@ -5,7 +5,7 @@
 		$contents = '';
 	 	
 	 	// 
-		$sql = "SELECT attendance.*, students.reference_number AS empid, students.firstname, students.lastname, attendance.id AS attid, purposes.name AS purpose_name FROM attendance LEFT JOIN students ON students.id=attendance.reference_number LEFT JOIN purposes ON purposes.id=attendance.purpose_id WHERE attendance.date BETWEEN '$from' AND '$to' ORDER BY attendance.date ASC, attendance.time_in ASC";
+		$sql = "SELECT attendance.*, students.reference_number AS empid, students.firstname, students.lastname, students.program, attendance.id AS attid, purposes.name AS purpose_name FROM attendance LEFT JOIN students ON students.id=attendance.reference_number LEFT JOIN purposes ON purposes.id=attendance.purpose_id WHERE attendance.date BETWEEN '$from' AND '$to' ORDER BY attendance.date ASC, attendance.time_in ASC";
 
 		$query = $conn->query($sql);
 		if (!$query) {
@@ -20,6 +20,7 @@
 				<td>'.date('M d, Y', strtotime($row['date'])).'</td>
                 <td>'.$row['firstname'].' '.$row['lastname'].'</td>
                 <td>'.$row['empid'].'</td>
+                <td>'.($row['program'] ? $row['program'] : '-').'</td>
                 <td>'.date('h:i A', strtotime($row['time_in'])).'</td>
                 <td>'.($row['time_out'] ? date('h:i A', strtotime($row['time_out'])) : '-').'</td>
                 <td>'.($row['purpose_name'] ? $row['purpose_name'] : '-').'</td>
@@ -54,7 +55,7 @@
     $pdf->SetAutoPageBreak(TRUE, 10);  
     $pdf->SetFont('helvetica', '', 11);  
     $pdf->AddPage();  
-    $pdf->Image('../images/panpacificu-logo.jpg', 10, 10, 20, '', 'JPG'); // Add logo to top left
+    $pdf->Image('../images/panpacificu-logo.jpg', 10, 10, 20, 0, 'JPG'); // Add logo to top left
     $pdf->SetY(20); // Move down to avoid overlapping the logo
     $content = '';  
     $content .= '
@@ -62,12 +63,13 @@
       	<h4 align="center">'.$from_title." - ".$to_title.'</h4>
       	<table border="1" cellspacing="0" cellpadding="3">  
            <tr>  
-				  <th width="15%"><b>Date</b></th>
-                  <th width="30%"><b>Full Name</b></th>
-                  <th width="15%"><b>Student ID</b></th>
+				  <th width="12%"><b>Date</b></th>
+                  <th width="25%"><b>Full Name</b></th>
+                  <th width="12%"><b>Student ID</b></th>
+                  <th width="18%"><b>Program</b></th>
                   <th width="10%"><b>Time In</b></th>
                   <th width="10%"><b>Time Out</b></th>
-                  <th width="20%"><b>Purpose</b></th>
+                  <th width="13%"><b>Purpose</b></th>
            </tr>  
       ';  
     $content .= generateRow($from, $to, $conn);  

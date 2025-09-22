@@ -14,31 +14,45 @@ if(isset($_POST['login'])){
     $username = $_POST['username'];
     $password = $_POST['password'];
     
+    // Use prepared statement to prevent SQL injection
     $sql = "SELECT * FROM admin WHERE username = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
     
-    if($result->num_rows > 0){
-        $row = $result->fetch_assoc();
-        if($password == $row['password']){
-            $_SESSION['admin'] = $row['id'];
-            $_SESSION['success'] = 'Login successful';
-            
-            if(isset($_POST['remember'])){
-                setcookie('admin_remember', $row['id'], time() + (30 * 24 * 60 * 60), '/');
-            }
-            
-            header('location: home.php');
-            exit();
-        } else {
-            $error = 'Incorrect password';
-        }
+    if (!$stmt) {
+        $error = 'Database error: ' . $conn->error;
     } else {
-        $error = 'Cannot find account with the username';
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if($result->num_rows < 1){
+            $error = 'Cannot find account with the username';
+        }
+        else{
+            $row = $result->fetch_assoc();
+            
+            // Check if password matches
+            if($password == $row['password']){
+                $_SESSION['admin'] = $row['id'];
+                $_SESSION['success'] = 'Login successful';
+                
+                // Handle remember me functionality
+                if(isset($_POST['remember'])){
+                    setcookie('admin_remember', $row['id'], time() + (30 * 24 * 60 * 60), '/');
+                }
+                
+                // Clear any previous errors
+                unset($_SESSION['error']);
+                
+                header('location: home.php');
+                exit();
+            }
+            else{
+                $error = 'Incorrect password';
+            }
+        }
+        $stmt->close();
     }
-    $stmt->close();
 }
 ?>
 <!DOCTYPE html>
