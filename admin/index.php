@@ -9,7 +9,7 @@ if(isset($_SESSION['admin'])){
 
 // Handle login directly in this file
 if(isset($_POST['login'])){
-    include 'includes/conn.php';
+    include '../conn.php';
     
     $username = $_POST['username'];
     $password = $_POST['password'];

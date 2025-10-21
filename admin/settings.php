@@ -1,6 +1,6 @@
 <?php
 	include 'includes/session.php';
-	include 'includes/conn.php';
+	include '../conn.php';
 	include 'includes/timezone_helper.php';
 
 	// Get current timezone setting

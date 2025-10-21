@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel to CSV Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .upload-area { 
+            border: 2px dashed #ccc; 
+            padding: 20px; 
+            text-align: center; 
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        .upload-area:hover { border-color: #999; }
+        .btn { 
+            background: #007cba; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            cursor: pointer; 
+            margin: 10px;
+        }
+        .btn:hover { background: #005a87; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Excel to CSV Converter</h2>
+        <p>Convert your Excel file to CSV format for import:</p>
+        
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <p>Click here to select Excel file (.xlsx)</p>
+            <input type="file" id="fileInput" accept=".xlsx" style="display: none;">
+        </div>
+        
+        <div id="result" class="hidden">
+            <h3>Conversion Result:</h3>
+            <p>Your Excel file has been converted to CSV format.</p>
+            <button class="btn" onclick="downloadCSV()">Download CSV File</button>
+            <button class="btn" onclick="copyToClipboard()">Copy CSV Data</button>
+        </div>
+        
+        <div id="csvData" style="display: none;"></div>
+    </div>
+
+    <script>
+        let csvData = '';
+        
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                convertExcelToCSV(file);
+            }
+        });
+        
+        function convertExcelToCSV(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // Get the first worksheet
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    // Convert to CSV
+                    csvData = XLSX.utils.sheet_to_csv(worksheet);
+                    
+                    // Show result
+                    document.getElementById('result').classList.remove('hidden');
+                    document.getElementById('csvData').textContent = csvData;
+                    
+                } catch (error) {
+                    alert('Error converting file: ' + error.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function downloadCSV() {
+            const blob = new Blob([csvData], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'converted_data.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        function copyToClipboard() {
+            navigator.clipboard.writeText(csvData).then(function() {
+                alert('CSV data copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
